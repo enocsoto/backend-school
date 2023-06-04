@@ -50,7 +50,7 @@ export class CursoService {
       Object.assign(curso, updateCursoDto);
       return this.cursoRepository.save(curso);
     } catch (error) {
-      throw new BadRequestException(`Can't updated Curso `, error);
+      throw new NotFoundException(`Curso whit id: ${id} Not Found `, error);
     }
   }
 
