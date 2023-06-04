@@ -13,5 +13,5 @@ services:
       - 3311
     ports:
       - "3311:3306"
-    # volumes
-    #   - ./data:/var/lib/mysql
+    volumes:
+       - ./data:/var/lib/mysql
