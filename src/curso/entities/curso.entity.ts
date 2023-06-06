@@ -1,7 +1,7 @@
 import { Estudiante } from '../../estudiante/entities/estudiante.entity'
 import { Materia } from '../../materia/entities/materia.entity'
 
-import { Entity, Column, OneToMany, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, OneToMany, Index, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
 
 @Entity()
 export class Curso {
@@ -18,7 +18,7 @@ export class Curso {
   @Column('timestamp', { name: 'updatedat', default: () => 'CURRENT_TIMESTAMP', })
   updatedat: Date;
   
-  @OneToMany(() => Estudiante, (estudiante) => estudiante.curso)
+  @ManyToMany(() => Estudiante, (estudiante) => estudiante.curso)
   estudiante: Estudiante;
 
   @OneToMany(() => Materia, (materia) => materia.curso)

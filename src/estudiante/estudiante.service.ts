@@ -8,7 +8,6 @@ import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Estudiante } from './entities/estudiante.entity';
 import { Repository } from 'typeorm';
-import { hashSync } from 'bcrypt';
 
 @Injectable()
 export class EstudianteService {
@@ -17,15 +16,11 @@ export class EstudianteService {
     private readonly estudentRepository: Repository<Estudiante>,
   ) {}
   async create(createEstudianteDto: CreateEstudianteDto) {
-    createEstudianteDto.name = createEstudianteDto.name.toLowerCase();
-    createEstudianteDto.lastname = createEstudianteDto.lastname.toLowerCase();
-    createEstudianteDto.email = createEstudianteDto.email.toLowerCase();
-    createEstudianteDto.password = hashSync(createEstudianteDto.password, 8);
-    createEstudianteDto.username = createEstudianteDto.username.toLowerCase();
     try {
-      const estudiante: Estudiante =
-        this.estudentRepository.create(createEstudianteDto);
-      return await this.estudentRepository.save(estudiante);
+      const estudiante = this.estudentRepository.create(createEstudianteDto);
+      await this.estudentRepository.save(estudiante);
+      delete estudiante.password;
+      return estudiante;
     } catch (error) {
       throw new BadRequestException(`No se pudo crear el estudiante ` + error);
     }
@@ -44,14 +39,12 @@ export class EstudianteService {
     if (!estudiante) {
       throw new NotFoundException(`Estudiante with ID ${id} not found`);
     }
+    delete estudiante.password;
     return estudiante;
   }
 
   async update(id: string, updateEstudianteDto: UpdateEstudianteDto) {
-    updateEstudianteDto.name = updateEstudianteDto.name.toLowerCase();
-    updateEstudianteDto.lastname = updateEstudianteDto.lastname.toLowerCase();
     updateEstudianteDto.email = updateEstudianteDto.email.toLowerCase();
-    updateEstudianteDto.username = updateEstudianteDto.username.toLowerCase();
 
     try {
       const estudiante = await this.findOne(id);
@@ -67,7 +60,7 @@ export class EstudianteService {
       await this.estudentRepository.delete(id);
     } catch (error) {
       throw new NotFoundException(
-        `No se pudo Encontro el usuario con id ${id}`,
+        `No se pudo Encontrar el estudiante con id ${id}`,
       );
     }
   }

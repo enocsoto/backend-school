@@ -1,4 +1,4 @@
-import { Entity, Column, Index, ManyToOne, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, Index, JoinColumn, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
 import { Curso } from '../../curso/entities/curso.entity';
 
 @Entity()
@@ -31,7 +31,7 @@ export class Estudiante {
   @Column('timestamp', { name: 'updatedat', default: () => 'CURRENT_TIMESTAMP', })
   updatedat: Date;
 
-  @ManyToOne(() => Curso, curso => curso.estudiante)
+  @ManyToMany(() => Curso, curso => curso.estudiante)
   @JoinColumn({ name: 'cursoId' })
   curso: Curso;
 
