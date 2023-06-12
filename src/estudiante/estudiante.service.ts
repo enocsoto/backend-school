@@ -15,11 +15,11 @@ export class EstudianteService {
     @InjectRepository(Estudiante)
     private readonly estudentRepository: Repository<Estudiante>,
   ) {}
+  
   async create(createEstudianteDto: CreateEstudianteDto) {
     try {
       const estudiante = this.estudentRepository.create(createEstudianteDto);
       await this.estudentRepository.save(estudiante);
-      delete estudiante.password;
       return estudiante;
     } catch (error) {
       throw new BadRequestException(`No se pudo crear el estudiante ` + error);
@@ -39,7 +39,6 @@ export class EstudianteService {
     if (!estudiante) {
       throw new NotFoundException(`Estudiante with ID ${id} not found`);
     }
-    delete estudiante.password;
     return estudiante;
   }
 

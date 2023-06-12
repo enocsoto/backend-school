@@ -1,7 +1,7 @@
 import { Estudiante } from '../../estudiante/entities/estudiante.entity'
 import { Materia } from '../../materia/entities/materia.entity'
 
-import { Entity, Column, OneToMany, Index, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
+import { Entity, Column, Index, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Curso {
@@ -19,8 +19,8 @@ export class Curso {
   updatedat: Date;
   
   @ManyToMany(() => Estudiante, (estudiante) => estudiante.curso)
-  estudiante: Estudiante;
+  estudiante: Estudiante[];
 
-  @OneToMany(() => Materia, (materia) => materia.curso)
-  materias: Materia[];
+  @ManyToOne(() => Materia)
+  materias: Materia;
 }

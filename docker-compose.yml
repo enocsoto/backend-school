@@ -5,10 +5,10 @@ services:
     image: mysql:5.7
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 'pass..'
-      MYSQL_PASSWORD: 'pass..'
-      MYSQL_DATABASE: 'db-prueba'
-      MYSQL_USER: 'Enoc'
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_NAME}'
+      MYSQL_USER: '${DB_USER}'
     expose:
       - 3311
     ports:

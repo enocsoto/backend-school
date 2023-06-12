@@ -7,13 +7,18 @@ import { MateriaModule } from './materia/materia.module';
 import { CursoModule } from './curso/curso.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(),
-    TypeOrmModule.forRoot({...dataSourceOptions}),
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: ['.dev.env', '.env'],
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRoot({ ...dataSourceOptions }),
 
     EstudianteModule,
 
     MateriaModule,
 
-    CursoModule],
+    CursoModule,
+  ],
 })
 export class AppModule {}
