@@ -16,50 +16,51 @@ export class CursoService {
     private readonly cursoRepository: Repository<Curso>,
   ) {}
 
-  async create(createCursoDto: CreateCursoDto) {
+  async create(createCursoDto: CreateCursoDto): Promise<Curso> {
     try {
       createCursoDto.nombre = createCursoDto.nombre.toLowerCase();
       const curso = this.cursoRepository.create(createCursoDto);
       return await this.cursoRepository.save(curso);
     } catch (error) {
-      throw new BadRequestException(`No se pudo crear el Curso`);
+      throw new BadRequestException(`Error creating the Course`);
     }
   }
 
-  findAll() {
+  findAll(): Promise<Curso[]> {
     try {
       return this.cursoRepository.find();
     } catch (error) {
-      throw new NotFoundException(`Not Found Cursos in BD`);
+      throw new NotFoundException(`Not found Course in BD`);
     }
   }
 
   async findOne(id: string): Promise<Curso> {
     try {
       const curso = await this.cursoRepository.findOne({ where: { id } });
-      if (!curso) throw new NotFoundException(`Curso not Found`);
+      if (!curso) throw new NotFoundException(`Course not found`);
       return curso;
     } catch (error) {
-      throw new NotFoundException(`Curso whit id: ${id} Not Found`);
+      throw new NotFoundException(`Course whit id: ${id} not found`);
     }
   }
 
-  async update(id: string, updateCursoDto: UpdateCursoDto) {
+  async update(id: string, updateCursoDto: UpdateCursoDto): Promise<Curso> {
     try {
       const curso = await this.findOne(id);
       Object.assign(curso, updateCursoDto);
       return this.cursoRepository.save(curso);
     } catch (error) {
-      throw new NotFoundException(`Curso whit id: ${id} Not Found `, error);
+      throw new NotFoundException(`Course whit id: ${id} not found `, error);
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string):Promise<String>{
     try {
       const curso = await this.findOne(id);
       await this.cursoRepository.remove(curso);
+      return `Course with ${id} has deleted`;
     } catch (error) {
-      throw new BadRequestException(`Curso with id: "${id}" not found`);
+      throw new BadRequestException(`Course with id: "${id}" not found`);
     }
   }
 }

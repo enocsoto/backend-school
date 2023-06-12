@@ -8,10 +8,6 @@ export class CreateMateriaDto {
   @ApiProperty({ example: 'Node JS', description: 'Nombre de la materia', type: String })
   @IsString()
   @IsNotEmpty()
-  nombre: string;
+  nombre_materia: string;
 
-  @ApiProperty({ type: [CreateCursoDto] })
-  @ValidateNested({ each: true })
-  @Type(() => CreateCursoDto)
-  cursos: CreateCursoDto[];
 }

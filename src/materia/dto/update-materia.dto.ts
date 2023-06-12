@@ -6,5 +6,5 @@ export class UpdateMateriaDto extends PartialType(CreateMateriaDto) {
   @ApiProperty({ example: 'Nuevo nombre de la materia', required: false })
   @IsOptional()
   @IsString()
-  nombre?: string;
+  nombre_materia?: string;
 }
