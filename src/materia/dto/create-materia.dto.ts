@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsString, IsNotEmpty, IsUUID, ValidateNested } from 'class-validator';
+import { IsString, IsNotEmpty, IsUUID, ValidateNested, IsArray, IsOptional } from 'class-validator';
 import { CreateCursoDto } from 'src/curso/dto/create-curso.dto';
 
 export class CreateMateriaDto {
@@ -9,5 +9,12 @@ export class CreateMateriaDto {
   @IsString()
   @IsNotEmpty()
   nombre_materia: string;
+
+  @ApiProperty({ example: 'Programacion', description: 'Nombre del curso', type: String })
+  @IsString({each:true})
+  @IsArray()
+  @IsOptional()
+  cursos?: string[];
+
 
 }

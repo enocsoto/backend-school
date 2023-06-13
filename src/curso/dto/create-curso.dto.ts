@@ -9,7 +9,7 @@ export class CreateCursoDto {
   @ApiProperty({ example: 'Nombre del curso', description: 'Nombre del curso', type: String })
   @IsString()
   @IsNotEmpty()
-  nombre: string;
+  nombre_curso: string;
 
   @ApiProperty({ type: CreateMateriaDto })
   @ValidateNested()

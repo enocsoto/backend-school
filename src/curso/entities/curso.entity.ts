@@ -10,7 +10,7 @@ export class Curso {
 
   @Index()
   @Column()
-  nombre: string;
+  nombre_curso: string;
 
   @Column('timestamp', { name: 'createdat', default: () => 'CURRENT_TIMESTAMP', })
   createdat: Date;
@@ -21,6 +21,6 @@ export class Curso {
   @ManyToMany(() => Estudiante, (estudiante) => estudiante.curso)
   estudiante: Estudiante[];
 
-  @ManyToOne(() => Materia)
+  @ManyToOne(() => Materia, materia => materia.cursos)
   materias: Materia;
 }

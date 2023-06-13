@@ -7,7 +7,7 @@ export class Materia {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Index()
+  
   @Column({unique: true})
   nombre_materia: string;
   
@@ -17,6 +17,6 @@ export class Materia {
   @Column('timestamp', { name: 'updatedat', default: () => 'CURRENT_TIMESTAMP', })
   updatedat: Date;
 
-  @OneToMany(() => Curso, curso => curso.materias, {cascade: true})
-  curso: Curso[];
+  @OneToMany(() => Curso, cursos => cursos.materias, {cascade: true})
+  cursos?: Curso[];
 }

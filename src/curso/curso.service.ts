@@ -18,7 +18,7 @@ export class CursoService {
 
   async create(createCursoDto: CreateCursoDto): Promise<Curso> {
     try {
-      createCursoDto.nombre = createCursoDto.nombre.toLowerCase();
+      createCursoDto.nombre_curso = createCursoDto.nombre_curso.toLowerCase();
       const curso = this.cursoRepository.create(createCursoDto);
       return await this.cursoRepository.save(curso);
     } catch (error) {

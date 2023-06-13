@@ -8,21 +8,36 @@ import { UpdateMateriaDto } from './dto/update-materia.dto';
 import { Materia } from './entities/materia.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Curso } from 'src/curso/entities/curso.entity';
 
 @Injectable()
 export class MateriaService {
   constructor(
     @InjectRepository(Materia)
     private readonly materiaRepository: Repository<Materia>,
+    @InjectRepository(Curso)
+    private readonly cursoRepository: Repository<Curso>,
   ) {}
 
-  async create(createMateriaDto: CreateMateriaDto): Promise<Materia> {
+  async create(createMateriaDto: CreateMateriaDto) {
     try {
-      const materia = this.materiaRepository.create(createMateriaDto);
+      const { cursos = [], ...MateriaDetails } = createMateriaDto;
+      const materia = this.materiaRepository.create({
+        ...MateriaDetails,
+        cursos: cursos.map(nombre_curso => this.cursoRepository.create({ nombre_curso: nombre_curso }),
+        ),
+      });
       await this.materiaRepository.save(materia);
-      return materia;
+      return { ...materia, nombre_cursos: cursos };
+
+      // const materia = this.materiaRepository.create(createMateriaDto);
+      // await this.materiaRepository.save(materia);
+      // return materia;
     } catch (error) {
-      throw new BadRequestException(`Error creating the subject, the name ${createMateriaDto.nombre_materia} it already create`, error);
+      throw new BadRequestException(
+        `Error creating the subject, the name ${createMateriaDto.nombre_materia} it already create`,
+        error,
+      );
     }
   }
 
@@ -51,12 +66,24 @@ export class MateriaService {
     id: string,
     updateMateriaDto: UpdateMateriaDto,
   ): Promise<Materia> {
+    const materia = await this.materiaRepository.preload({
+      id: id,
+      ...updateMateriaDto,
+      cursos: [],
+    });
+    if (!materia)
+      throw new NotFoundException(`Subject whit id ${id} not found`);
+
     try {
-      const materia = await this.findOne(id);
-      this.materiaRepository.merge(materia, updateMateriaDto);
-      return this.materiaRepository.save(materia);
+      await this.materiaRepository.save(materia);
+      return materia;
+      // const materia = await this.findOne(id);
+      // this.materiaRepository.merge(materia, updateMateriaDto);
+      // return this.materiaRepository.save(materia);
     } catch (error) {
-      throw new BadRequestException(`Error updating the Subject with id: ${id}`)
+      throw new BadRequestException(
+        `Error updating the Subject with id: ${id}`,
+      );
     }
   }
 

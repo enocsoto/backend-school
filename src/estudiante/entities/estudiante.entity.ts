@@ -3,7 +3,7 @@ import { Curso } from '../../curso/entities/curso.entity';
 
 @Entity()
 export class Estudiante {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid') 
   id: string;
 
   @Column('varchar', { name: 'name', length: 50 })
@@ -18,8 +18,8 @@ export class Estudiante {
   @Column('varchar', { name: 'email', unique: true, length: 255 })
   email: string;
   
-  @Column()
   @Index()
+  @Column()
   cursoId: string;
 
   @Column('timestamp', { name: 'createdat', default: () => 'CURRENT_TIMESTAMP', })
