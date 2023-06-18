@@ -10,7 +10,7 @@ export class CreateMateriaDto {
   @IsNotEmpty()
   nombre_materia: string;
 
-  @ApiProperty({ example: 'Programacion', description: 'Nombre del curso', type: String })
+  @ApiProperty({ example: ['Programacion'], description: 'Nombre del curso', type: Array })
   @IsString({each:true})
   @IsArray()
   @IsOptional()

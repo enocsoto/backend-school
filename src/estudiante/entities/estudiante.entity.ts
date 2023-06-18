@@ -1,11 +1,14 @@
-import { Entity, Column, Index, JoinColumn, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
+import { Entity, Column, Index, JoinColumn, PrimaryGeneratedColumn, ManyToMany, OneToMany } from 'typeorm';
 import { Curso } from '../../curso/entities/curso.entity';
+import { BaseEntity } from '../../common/config/base.entity';
+import { IEstudiante } from '../../interfaces/estudiante.interface';
+import { ROLES } from '../../common/config/roles.enum';
+import { EstudiantesCursosEntity } from './estudiantesCursos.entity';
+import { EstudiantesCursosMateriasEntity } from './cursosMaterias.entity';
 
 @Entity()
-export class Estudiante {
-  @PrimaryGeneratedColumn('uuid') 
-  id: string;
-
+export class Estudiante extends BaseEntity implements IEstudiante{
+  
   @Column('varchar', { name: 'name', length: 50 })
   name: string;
   
@@ -14,21 +17,25 @@ export class Estudiante {
   
   @Column('varchar', { name: 'documento', length: 50 })
   documento: string;
-
+  
   @Column('varchar', { name: 'email', unique: true, length: 255 })
   email: string;
+  
+  @Column({type: 'enum', enum: ROLES})
+  role: ROLES;
   
   @Index()
   @Column()
   cursoId: string;
 
-  @Column('timestamp', { name: 'createdat', default: () => 'CURRENT_TIMESTAMP', })
-  createdat: Date;
+  @OneToMany(()=> EstudiantesCursosEntity, (estudiantesCursos) => estudiantesCursos.estudiante)
+  cursosIncluidos: EstudiantesCursosEntity[];
 
-  @Column('timestamp', { name: 'updatedat', default: () => 'CURRENT_TIMESTAMP', })
-  updatedat: Date;
+  @OneToMany(()=> EstudiantesCursosMateriasEntity, (estudianteMateria)=> estudianteMateria.estudiante)
+  estudiantesCursosMaterias: EstudiantesCursosMateriasEntity[];
+  
 
-  @ManyToMany(() => Curso, curso => curso.estudiante, {cascade: true})
-  curso: Curso[];
-
+  // @ManyToMany(() => Curso, curso => curso.estudiante, {cascade: true})
+  // curso: Curso[];Estudiantes
+  
 }

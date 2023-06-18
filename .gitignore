@@ -3,6 +3,7 @@
 /node_modules
 /migrations
 *.env
+.env
 data/
 
 # Logs

@@ -7,7 +7,7 @@ import { CreateMateriaDto } from './dto/create-materia.dto';
 import { UpdateMateriaDto } from './dto/update-materia.dto';
 import { Materia } from './entities/materia.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Curso } from 'src/curso/entities/curso.entity';
 
 @Injectable()
@@ -17,6 +17,7 @@ export class MateriaService {
     private readonly materiaRepository: Repository<Materia>,
     @InjectRepository(Curso)
     private readonly cursoRepository: Repository<Curso>,
+    private readonly dataSource : DataSource,
   ) {}
 
   async create(createMateriaDto: CreateMateriaDto) {
@@ -24,8 +25,9 @@ export class MateriaService {
       const { cursos = [], ...MateriaDetails } = createMateriaDto;
       const materia = this.materiaRepository.create({
         ...MateriaDetails,
-        cursos: cursos.map(nombre_curso => this.cursoRepository.create({ nombre_curso: nombre_curso }),
-        ),
+        //cursos: cursos.map((nombre_curso) =>
+          //this.cursoRepository.create({ nombre_curso: nombre_curso }),
+      //  ),
       });
       await this.materiaRepository.save(materia);
       return { ...materia, nombre_cursos: cursos };
@@ -43,7 +45,11 @@ export class MateriaService {
 
   async findAll(): Promise<Materia[]> {
     try {
-      const materias = await this.materiaRepository.find();
+      const materias = await this.materiaRepository.find({
+        relations: {
+          //cursos: true,
+        },
+      });
       return materias;
     } catch (error) {
       throw new NotFoundException(`Error subjects not Found`);
@@ -62,19 +68,22 @@ export class MateriaService {
     }
   }
 
-  async update(
-    id: string,
-    updateMateriaDto: UpdateMateriaDto,
-  ): Promise<Materia> {
-    const materia = await this.materiaRepository.preload({
-      id: id,
-      ...updateMateriaDto,
-      cursos: [],
-    });
-    if (!materia)
-      throw new NotFoundException(`Subject whit id ${id} not found`);
+  async update(id: string, updateMateriaDto: UpdateMateriaDto) {
+    const { cursos, ...toUpdate } = updateMateriaDto;
+
+    const materia = await this.materiaRepository.preload({ id, ...toUpdate });
+    if (!materia) throw new NotFoundException(`Subject whit id ${id} not found`);
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();// corre el queryRunner
+    await queryRunner.startTransaction(); //inician las transacciones a la base de datos
 
     try {
+ 
+      if(cursos){
+        await queryRunner.manager.softDelete( Curso, {cursos: {id}})
+        cursos
+      }
       await this.materiaRepository.save(materia);
       return materia;
       // const materia = await this.findOne(id);

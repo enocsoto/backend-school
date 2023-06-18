@@ -9,7 +9,7 @@ import { CursoModule } from './curso/curso.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.dev.env', '.env'],
+      envFilePath: `.${process.env.NODE_ENV}.env`,
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({ ...dataSourceOptions }),
